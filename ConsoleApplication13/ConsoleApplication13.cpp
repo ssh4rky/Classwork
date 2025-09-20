@@ -4,35 +4,72 @@
 using namespace std;
 
 template <typename T>
-class Node {
 
+struct Node {
+	T value;
+	Node<T>* next;
+	Node(T val) : value(val), next(nullptr) {}
 };
+
+template<typename T>
+class LinkedList {
+private:
+	Node<T>* head;
+	Node<T>* tail;
+	int size;
+public:
+	LinkedList() : head(nullptr), tail(nullptr), size(0) {}
+	~LinkedList();
+
+	void Append(T val);
+	void Find(T val) const;
+	void InsertAt(int index, T val);
+	T RemoveAt(int index);
+
+	int GetSize() const {
+		return size;
+	}
+	Node<T>* GetHead() const {
+		return head;
+	}
+	Node<T>* GetTail() const {
+		return tail;
+	}
+};
+
+template <typename T>
+void LinkedList<T>::Append(T val) {
+	Node<T>* newNode = new Node<T>(val);
+	if (tail == nullptr) {
+		head = tail = newNode;
+	}
+	else {
+		tail->next = newNode;
+		tail = newNode;
+	}
+	size++;
+}
+
+template<typename T>
+LinkedList<T>::~LinkedList() {
+	Node<T>* current = head;
+	while (current) {
+		Node<T>* nextNode = current->next;
+		delete[] current;
+		current = nextNode;
+	}
+}
 
 int main()
 {
-    int a[4] = { 10, 15, 4, 5 };
+	LinkedList<int> list;
+	list.Append(10);
+	list.Append(12);
 
-    // ptr[0] + ( index * size1 )
-    // 0x00f + ( 2 * 4 )
-
-    cout << "Enter elements count: ";
-    int size;
-    cin >> size;
-    char* str = new char[size];
-    for (int i = 0; i < size - 1; i++) {
-        str[i] = 'N';
-    }
-    str[size - 1] = '\0';
-    cout << str << endl;
-    char* temp = new char[size + 1];
-    for (int i = 0; i < size - 1; i++) {
-        str[i] = 'N';
-    }
-    temp[size - 1] = 'n';
-    temp[size] = '\0';
-    delete[] str;
-    str = temp;
-    temp = nullptr;
-
-    delete[] str;
+	Node<int>* current = list.GetHead();
+	while (current != nullptr) {
+		Node<int>* nextNode = current->next;
+		cout << current->value << endl;
+		current = nextNode;
+	}
 }
