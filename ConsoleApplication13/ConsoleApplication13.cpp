@@ -186,4 +186,13 @@ int main()
 
 	list.forEach(Square);
 	list.PrintList();
+
+	Stack<char> stack;
+	stack.push('q');
+	stack.push('w');
+	stack.push('t');
+
+	cout << stack.peek() << endl;
+	stack.pop();
+	cout << stack.peek() << endl;
 }
