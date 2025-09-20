@@ -172,7 +172,6 @@ public:
 	}
 };
 
-
 int main()
 {
 	LinkedList<int> list;
