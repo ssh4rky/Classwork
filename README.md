@@ -48,4 +48,4 @@ Sometimes polished, sometimes messy — but always a step forward in learning.
 
 Teachers, mentors, or fellow students — feel free to suggest improvements, corrections, or new challenges!  
 
-**sh4rk 🦈 | Biting bugs since 2019**
+sh4rk 🦈 | Biting bugs since 2019
