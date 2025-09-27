@@ -25,9 +25,7 @@ Sometimes polished, sometimes messy — but always a step forward in learning.
 
 | Folder/File  | Description                                      |
 |--------------|--------------------------------------------------|
-| Lesson01/    | First steps, intro tasks, simple programs        |
-| Lesson02/    | Loops, conditionals, and problem solving         |
-| Lesson03/    | Functions, arrays, and more structured programs  |
+| ConsoleApplication13  | Classworks and Practice      |
 | README.md    | You’re reading it right now 😉                   |
 
 ---
