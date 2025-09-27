@@ -1,72 +1,130 @@
 ﻿#include <iostream>
 #include <vector>
+#include <string>
 
 using namespace std;
 
-class Book {
+//Aggregation
+class Case {
 private:
-	string author;
-	string title;
+	string material;
+	bool onphone;
 public:
-	Book(string author, string title) : author(author), title(title) {}
-	void Print() const {
-		cout << "Author: " << author << endl;
-		cout << "Title: " << title << endl;
+	Case() : material("Plastic"), onphone(false) {};
+	Case(string m) : material(m), onphone(true) {};
+	bool GetCase() {
+		return onphone;
 	}
 };
 
-class BookShelf {
+class Phone {
 private:
-	vector<Book> books;
+	Case* phonecase;
+	string brand;
+	string model;
 public:
-	void AddBook(Book& book) {
-		books.push_back(book);
+	Phone() : brand("Samsung"), model("S25") {
+		phonecase = new Case("Metal");
 	}
-	void PrintBooks() {
-		for (auto book : books) {
-			book.Print();
-		}
+	void PrintInfo() {
+		cout << "Brand: " << brand << endl;
+		cout << "Model: " << model << endl;
+		cout << "Case is on? " << (phonecase->GetCase() ? "Yes" : "No") << endl;
 	}
 };
 
-class Engine {
+//Composition
+class VideoCard {
 private:
-	bool incar;
-	int hp;
+    string brand;
+    string model;
+    double performance_quality;
+    bool inpc;
 public:
-	Engine() : incar(true), hp(100) {};
-	Engine(bool incar, int hp) : incar(incar), hp(hp) {};
+    VideoCard() : brand("Nvidia"), model("RTX5090"), performance_quality(100.0), inpc(true) {}
+    VideoCard(string b, string m, double pq) : brand(b), model(m), performance_quality(pq), inpc(true) {}
 
-	bool GetEngine() {
-		return incar;
-	}
+    bool GetPCStatus() const {
+        return inpc;
+    }
+
+    double GetPerformance() const {
+        return performance_quality;
+    }
+
+    void GetInfo() const {
+        cout << "Brand: " << brand << endl;
+        cout << "Model: " << model << endl;
+        cout << "Performance quality: " << performance_quality << endl;
+        cout << "In PC? " << (inpc ? "Yes" : "No") << endl;
+    }
 };
 
-class Car {
+class Processor {
 private:
-	Engine* engine;
+    string brand;
+    string model;
+    double performance_quality;
+    bool inpc;
 public:
-	Car() {
-		engine = new Engine(true, 100);
-	}
-	void Start() {
-		if (!engine) {
-			cout << "Cannot start without engine" << endl;
-		}
-		else {
-			cout << "Engine Started..." << endl;
-		}
-	}
+    Processor() : brand("Intel"), model("Core i9"), performance_quality(90.0), inpc(true) {}
+    Processor(string b, string m, double pq) : brand(b), model(m), performance_quality(pq), inpc(true) {}
+
+    bool GetPCStatus() const {
+        return inpc;
+    }
+
+    double GetPerformance() const {
+        return performance_quality;
+    }
+
+    void GetInfo() const {
+        cout << "Brand: " << brand << endl;
+        cout << "Model: " << model << endl;
+        cout << "Performance quality: " << performance_quality << endl;
+        cout << "In PC? " << (inpc ? "Yes" : "No") << endl;
+    }
 };
 
-class Cat {
+class PC {
+private:
+    VideoCard videocard;
+    Processor processor;
+    double sum_performance;
+public:
+    PC() : videocard(), processor() {
+        sum_performance = (videocard.GetPerformance() + processor.GetPerformance()) / 2;
+    }
+
+    PC(VideoCard vc, Processor pr) : videocard(vc), processor(pr) {
+        sum_performance = (videocard.GetPerformance() + processor.GetPerformance()) / 2;
+    }
+
+    bool GetOverallPCStatus() const {
+        return videocard.GetPCStatus() && processor.GetPCStatus();
+    }
+
+    void GetPCInfo() const {
+        if (GetOverallPCStatus()) {
+            videocard.GetInfo();
+            processor.GetInfo();
+            cout << "Performance Statistics: " << sum_performance << endl;
+        }
+        else {
+            cout << "Something went missing" << endl;
+        }
+    }
+};
+
+//Inheritance
+class Dog {
 protected:
 	string name;
 	string breed;
 	int age;
 public:
-	Cat() : name("Barsyk"), breed("StreetCat"), age(10) {};
-	Cat(string name, string breed, int age) : name(name), breed(breed), age(age) {}
+	Dog() : name("Barsyk"), breed("StreetCat"), age(10) {};
+	Dog(string name, string breed, int age) : name(name), breed(breed), age(age) {}
 	virtual void MakeSound() {
 		cout << "Meow" << endl;
 	}
@@ -77,11 +135,11 @@ public:
 	}
 };
 
-class Tiger : public Cat {
+class Wolf : public Dog {
 public:
-	Tiger() {
+	Wolf() {
 		name = "Druzhok";
-		breed = "Tiger";
+		breed = "Wolf";
 		age = 30;
 	}
 	void MakeSound() override {
@@ -91,11 +149,24 @@ public:
 
 int main()
 {
-	Cat cat;
-	Tiger tiger;
+	// Aggregation
+	Phone myPhone;
+	myPhone.PrintInfo();
+	cout << endl;
 
-	cat.PrintInfo();
-	cat.MakeSound();
-	tiger.PrintInfo();
-	tiger.MakeSound();
+	// Composition
+	PC myPC;
+	myPC.GetPCInfo();
+	cout << endl;
+
+	// Inheritance
+	Dog myDog("Rex", "German Shepherd", 5);
+	myDog.PrintInfo();
+	myDog.MakeSound();
+	cout << endl;
+
+	Wolf myWolf;
+	myWolf.PrintInfo();
+	myWolf.MakeSound();
+	cout << endl;
 }
