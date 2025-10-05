@@ -1,172 +1,124 @@
 ﻿#include <iostream>
+#include <fstream>
 #include <vector>
 #include <string>
 
 using namespace std;
 
-//Aggregation
-class Case {
-private:
-	string material;
-	bool onphone;
-public:
-	Case() : material("Plastic"), onphone(false) {};
-	Case(string m) : material(m), onphone(true) {};
-	bool GetCase() {
-		return onphone;
-	}
-};
-
-class Phone {
-private:
-	Case* phonecase;
-	string brand;
-	string model;
-public:
-	Phone() : brand("Samsung"), model("S25") {
-		phonecase = new Case("Metal");
-	}
-	void PrintInfo() {
-		cout << "Brand: " << brand << endl;
-		cout << "Model: " << model << endl;
-		cout << "Case is on? " << (phonecase->GetCase() ? "Yes" : "No") << endl;
-	}
-};
-
-//Composition
-class VideoCard {
-private:
-    string brand;
-    string model;
-    double performance_quality;
-    bool inpc;
-public:
-    VideoCard() : brand("Nvidia"), model("RTX5090"), performance_quality(100.0), inpc(true) {}
-    VideoCard(string b, string m, double pq) : brand(b), model(m), performance_quality(pq), inpc(true) {}
-
-    bool GetPCStatus() const {
-        return inpc;
-    }
-
-    double GetPerformance() const {
-        return performance_quality;
-    }
-
-    void GetInfo() const {
-        cout << "Brand: " << brand << endl;
-        cout << "Model: " << model << endl;
-        cout << "Performance quality: " << performance_quality << endl;
-        cout << "In PC? " << (inpc ? "Yes" : "No") << endl;
-    }
-};
-
-class Processor {
-private:
-    string brand;
-    string model;
-    double performance_quality;
-    bool inpc;
-public:
-    Processor() : brand("Intel"), model("Core i9"), performance_quality(90.0), inpc(true) {}
-    Processor(string b, string m, double pq) : brand(b), model(m), performance_quality(pq), inpc(true) {}
-
-    bool GetPCStatus() const {
-        return inpc;
-    }
-
-    double GetPerformance() const {
-        return performance_quality;
-    }
-
-    void GetInfo() const {
-        cout << "Brand: " << brand << endl;
-        cout << "Model: " << model << endl;
-        cout << "Performance quality: " << performance_quality << endl;
-        cout << "In PC? " << (inpc ? "Yes" : "No") << endl;
-    }
-};
-
-class PC {
-private:
-    VideoCard videocard;
-    Processor processor;
-    double sum_performance;
-public:
-    PC() : videocard(), processor() {
-        sum_performance = (videocard.GetPerformance() + processor.GetPerformance()) / 2;
-    }
-
-    PC(VideoCard vc, Processor pr) : videocard(vc), processor(pr) {
-        sum_performance = (videocard.GetPerformance() + processor.GetPerformance()) / 2;
-    }
-
-    bool GetOverallPCStatus() const {
-        return videocard.GetPCStatus() && processor.GetPCStatus();
-    }
-
-    void GetPCInfo() const {
-        if (GetOverallPCStatus()) {
-            videocard.GetInfo();
-            processor.GetInfo();
-            cout << "Performance Statistics: " << sum_performance << endl;
-        }
-        else {
-            cout << "Something went missing" << endl;
-        }
-    }
-};
-
-//Inheritance
-class Dog {
+class Shape {
 protected:
-	string name;
-	string breed;
-	int age;
+    string name;
 public:
-	Dog() : name("Barsyk"), breed("StreetCat"), age(10) {};
-	Dog(string name, string breed, int age) : name(name), breed(breed), age(age) {}
-	virtual void MakeSound() {
-		cout << "Meow" << endl;
-	}
-	void PrintInfo() {
-		cout << "Name: " << name << endl;
-		cout << "Breed: " << breed << endl;
-		cout << "Age: " << age << endl;
-	}
+    Shape(string n = "") : name(n) {}
+    virtual void Show() const = 0;
+    virtual void SaveToFile(ofstream& fout) const = 0;
+    virtual void LoadFromFile(ifstream& fin) = 0;
+    virtual ~Shape() {}
 };
 
-class Wolf : public Dog {
+class Square : public Shape {
+private:
+    double side;
 public:
-	Wolf() {
-		name = "Druzhok";
-		breed = "Wolf";
-		age = 30;
-	}
-	void MakeSound() override {
-		cout << "MEOW" << endl;
-	}
+    Square(double s = 0) : Shape("Square"), side(s) {}
+
+    void Show() const override {
+        cout << name << " — side: " << side
+            << ", S: " << side * side << endl;
+    }
+
+    void SaveToFile(ofstream& fout) const override {
+        fout << name << " " << side << endl;
+    }
+
+    void LoadFromFile(ifstream& fin) override {
+        fin >> side;
+    }
 };
 
-int main()
-{
-	// Aggregation
-	Phone myPhone;
-	myPhone.PrintInfo();
-	cout << endl;
+class Rectangle : public Shape {
+private:
+    double a, b;
+public:
+    Rectangle(double a = 0, double b = 0) : Shape("Rectangle"), a(a), b(b) {}
 
-	// Composition
-	PC myPC;
-	myPC.GetPCInfo();
-	cout << endl;
+    void Show() const override {
+        cout << name << " — Sides: " << a << " and " << b
+            << ", S: " << a * b << endl;
+    }
 
-	// Inheritance
-	Dog myDog("Rex", "German Shepherd", 5);
-	myDog.PrintInfo();
-	myDog.MakeSound();
-	cout << endl;
+    void SaveToFile(ofstream& fout) const override {
+        fout << name << " " << a << " " << b << endl;
+    }
 
-	Wolf myWolf;
-	myWolf.PrintInfo();
-	myWolf.MakeSound();
-	cout << endl;
+    void LoadFromFile(ifstream& fin) override {
+        fin >> a >> b;
+    }
+};
+
+class Circle : public Shape {
+private:
+    double radius;
+public:
+    Circle(double r = 0) : Shape("Circle"), radius(r) {}
+
+    void Show() const override {
+        cout << name << " — Radius: " << radius
+            << ", S: " << 3.14159 * radius * radius << endl;
+    }
+
+    void SaveToFile(ofstream& fout) const override {
+        fout << name << " " << radius << endl;
+    }
+
+    void LoadFromFile(ifstream& fin) override {
+        fin >> radius;
+    }
+};
+
+int main() {
+    vector<Shape*> shapes;
+
+    shapes.push_back(new Square(4));
+    shapes.push_back(new Rectangle(3, 5));
+    shapes.push_back(new Circle(2));
+
+    ofstream fout("shapes.txt");
+    if (!fout) {
+        cerr << "Error: cannot open file;" << endl;
+        return 1;
+    }
+    for (auto s : shapes)
+        s->SaveToFile(fout);
+    fout.close();
+
+    ifstream fin("shapes.txt");
+    if (!fin) {
+        cerr << "Error: cannot open file;" << endl;
+        return 1;
+    }
+
+    vector<Shape*> loaded;
+    string type;
+    while (fin >> type) {
+        Shape* s = nullptr;
+        if (type == "Square") s = new Square();
+        else if (type == "Rectangle") s = new Rectangle();
+        else if (type == "Circle") s = new Circle();
+
+        if (s) {
+            s->LoadFromFile(fin);
+            loaded.push_back(s);
+        }
+    }
+    fin.close();
+
+    cout << "Downloaded figures:\n";
+    for (auto s : loaded)
+        s->Show();
+
+    for (auto s : shapes) delete s;
+    for (auto s : loaded) delete s;
+
+    return 0;
 }
